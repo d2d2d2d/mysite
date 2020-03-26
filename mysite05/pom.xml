@@ -154,7 +154,7 @@
 
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
-		<finalName>mysite04</finalName>
+		<finalName>mysite05</finalName>
 		<resources>
 			<resource>
 				<directory>${project.basedir}/src/main/resources</directory>
