@@ -15,9 +15,6 @@ import com.douzone.mysite.vo.UserVo;
 public class UserRepository {
 
 	@Autowired
-	private DataSource dataSource;
-
-	@Autowired
 	private SqlSession sqlSession;
 
 	public int insert(UserVo vo) {
@@ -41,6 +38,10 @@ public class UserRepository {
 
 	public UserVo find(Long no) {
 		return sqlSession.selectOne("user.find", no);
+	}
+
+	public Object find(String email) {
+		return sqlSession.selectOne("user.findByEmail", email);
 	}
 
 

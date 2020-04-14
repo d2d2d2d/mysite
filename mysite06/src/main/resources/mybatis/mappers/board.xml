@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="board">
+
+	<select id="getList" resultType="boardvo">
+		<![CDATA[
+		select b.no, title, contents, hit, 
+			   date_format(reg_date, '%Y-%m-%d %h:%i:%s') as regDate, 
+			   g_no as gNo, o_no as oNo, dept, u.name, user_no as userNo
+		  from board b, user u
+		 where b.user_no = u.no
+	  order by g_no desc, o_no asc
+		]]>
+	</select>
+
+	<select id="paging" parameterType="map" resultType="boardvo">
+		<![CDATA[
+		select b.no, title, contents, hit, 
+			   date_format(reg_date, '%Y-%m-%d %h:%i:%s') as regDate, 
+			   g_no as gNo, o_no as oNo, dept, u.name, user_no as userNo
+		  from board b, user u
+		 where b.user_no = u.no
+	  order by g_no desc, o_no asc
+	     limit #{from }, #{rowSize }
+		]]>
+	</select>
+
+	<select id="getTotalBoard" resultType="_int">
+		<![CDATA[
+		select count(*) as total
+		  from board
+		]]>
+	</select>
+
+	<insert id="insert" parameterType="boardvo">
+		<![CDATA[
+		insert
+		  into board(title, contents, hit, reg_date, g_no, o_no, dept, user_no)
+		values (#{title }, #{contents }, 0, now(),
+				(select ifnull(max(b.g_no), 0)+1 from board b), 1, 0, #{userNo })
+		]]>
+		<selectKey keyProperty="no" resultType="long" order="AFTER">
+			select
+			last_insert_id()
+		</selectKey>
+	</insert>
+
+	<select id="findView" resultType="boardvo">
+		<![CDATA[
+		select no, title, contents, user_no as userNo
+		  from board
+		 where no = #{no }
+		]]>
+	</select>
+
+	<update id="hitUpdate" parameterType="boardvo">
+		<![CDATA[
+		update board
+		   set hit = hit+1
+		 where no = #{no }
+		]]>
+	</update>
+
+	<update id="update" parameterType="boardvo">
+		<![CDATA[
+		update board
+		   set title= #{title }, contents=#{contents }, reg_date=now()
+		 where no= #{no }
+		]]>
+	</update>
+
+	<update id="delete" parameterType="boardvo">
+		<![CDATA[
+		delete
+		  from board
+		 where no=#{no }
+		]]>
+	</update>
+
+	<update id="replyUpdate" parameterType="boardvo">
+		<![CDATA[
+		update board
+		   set o_no = o_no+1
+		 where g_no = #{gNo }
+		   and o_no > #{oNo }
+		]]>
+	</update>
+
+	<insert id="replyInsert" parameterType="boardvo">
+		<![CDATA[
+		insert
+		into board(title, contents, hit, reg_date, g_no, o_no, dept, user_no)
+		values(#{title }, #{contents }, 0, now(), #{gNo }, #{oNo }+1, #{dept }+1, #{userNo })
+		]]>
+		<selectKey keyProperty="no" resultType="long" order="AFTER">
+			select
+			last_insert_id()
+		</selectKey>
+	</insert>
+
+</mapper>
