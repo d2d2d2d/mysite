@@ -27,7 +27,7 @@ public class GuestbookController {
 	public String index(HttpServletRequest request) {
 		List<GuestbookVo> list = guestbookService.getList();
 		request.setAttribute("list", list);
-		return "guestbook/list";
+		return "guestbook/index";
 	}
 	
 	@RequestMapping(value="/insert", method=RequestMethod.POST)
@@ -54,5 +54,10 @@ public class GuestbookController {
 	@ExceptionHandler( Exception.class )
 	public String handleException() {
 		return "error/exception";
+	}
+	
+	@RequestMapping( "/spa" )
+	public String indexSpa( Model model ){
+		return "guestbook/index-spa";
 	}
 }

@@ -55,4 +55,8 @@ public class GuestbookController {
 	public String handleException() {
 		return "error/exception";
 	}
+	@RequestMapping( "/spa" )
+	public String indexSpa( Model model ){
+		return "guestbook/index-spa";
+	}
 }
